@@ -1,0 +1,6 @@
+---
+applications:
+- name: sample
+  buildpack: python_buildpack
+  memory: 256M
+  command: python app.py

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<title>Predix Time Series</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="import" href="/static/bower_components/px-vis-timeseries/px-vis-timeseries.html"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+
+function update() {
+  $.get("/update", function(data){
+    //console.log(data); 
+    var chart = document.getElementById("chart");
+    chart.set('chartData', JSON.parse(data));
+
+  });
+}
+
+$(document).ready(function(){
+  var updater = setInterval(update, 10000);
+
+});
+
+</script>
+
+<body>
+
+<div>
+<px-vis-timeseries id="chart"
+debounce-resize-timing="250"
+width="780"
+height="430"
+chart-horizontal-alignment="center"
+chart-vertical-alignment="center"
+margin='{"top":100,"bottom":60,"left":65,"right":65}'
+tooltip-config='{}'
+register-config='{"type":"horizontal"}'
+selection-type="xy"
+chart-data='{{chart_data | tojson | safe}}'
+series-config='{"y0":{"name":"temp","x":"timeStamp","y":"y0","yAxisUnit":"°C","axis":{"id":"axis1","side":"left","number":"1"}}}'
+chart-extents='{"x":["dynamic","dynamic"],"y":["dynamic","dynamic"]}'
+threshold-config='{"max":{"color":"red","dashPattern":"5,0","title":"MAX","showThresholdBox":true,"displayTitle":true}}'
+x-axis-config='{"title":"Date"}'
+y-axis-config='{"title":"Single","titleTruncation":false,"unit":"F","axis1":{"title":"Temperature","titleTruncation":false,"unit":"C"}}'
+dynamic-menu-config='[{"name":"Delete","action":"function(data) {var conf = {}, keys=Object.keys(this.seriesConfig); for(var i=0; i<keys.length;i++) { if(keys[i] !== data.additionalDetail.name) {conf[keys[i]] = this.seriesConfig[keys[i]];}} this.set(\"seriesConfig\", conf);}","eventName":"delete","icon":"px-vis:trash-series"},{"name":"Bring To Front","action":"function(data) {this.set(\"serieToRedrawOnTop\", data.additionalDetail.name);}","eventName":"bring-to-front","icon":"px-vis:bring-to-front"}]'
+
+</px-vis-timeseries>
+
+</div>
+
+
+</body>
+</html>
+
+
